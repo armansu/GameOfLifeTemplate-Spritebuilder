@@ -27,6 +27,21 @@ static const int GRID_COLUMNS = 10;
     self.userInteractionEnabled = YES;
 }
 
+-(void) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    CGPoint touchLocation = [touch locationInNode:self];
+    
+    Creature * creature = [self creatureForTouchPosition:touchLocation];
+    
+    creature.isAlive = !creature.isAlive;
+}
+
+- (Creature *)creatureForTouchPosition:(CGPoint)touchPosition {
+    //get the row and column that was touched, return the Creature inside the corresponding cell
+    int j = touchPosition.x / _cellWidth;
+    int i = touchPosition.y / _cellHeight;
+    return _gridArray[i][j];
+}
+
 - (void) setupGrid {
     _cellWidth = self.contentSize.width / GRID_COLUMNS;
     _cellHeight = self.contentSize.height / GRID_ROWS;
@@ -46,7 +61,6 @@ static const int GRID_COLUMNS = 10;
             [self addChild:creature];
             
             _gridArray[i][j] = creature;
-            creature.isAlive = YES;
             x += _cellWidth;
         }
         y += _cellHeight;
