@@ -68,11 +68,12 @@ static const int GRID_COLUMNS = 10;
             Creature * creature = _gridArray[i][j];
             if(creature.livingNeighbors == 3) {
                 creature.isAlive = YES;
-                aliveCount++;
             } else {
                 if(creature.livingNeighbors <= 1 || creature.livingNeighbors >= 4)
                     creature.isAlive = NO;
             }
+            if(creature.isAlive)
+                aliveCount++;
         }
     }
     _totalAlive = aliveCount;
