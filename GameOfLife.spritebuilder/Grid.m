@@ -27,6 +27,54 @@ static const int GRID_COLUMNS = 10;
     self.userInteractionEnabled = YES;
 }
 
+-(void) evolveStep{
+    [self countNeighbors];
+    [self updateCreatures];
+    _generation++;
+}
+
+- (BOOL)_isIndexValidForX:(int)x andY:(int)y {
+    return x >= 0 && x < GRID_ROWS && y >= 0 && y < GRID_COLUMNS;
+}
+
+- (void) countNeighbors {
+    for(int i = 0; i < [_gridArray count]; ++i) {
+        
+        for(int j = 0; j < [_gridArray[i] count]; ++j) {
+            Creature * creature = _gridArray[i][j];
+            creature.livingNeighbors = 0;
+            
+            for(int x = i - 1; x <= i + 1; ++x) {
+                for(int y = j - 1; y <= j + 1; ++y) {
+                    
+                    if(x == i && y == j) continue;
+                    if([self _isIndexValidForX:x andY:y]) {
+                        Creature * neighbor = _gridArray[x][y];
+                        if(neighbor.isAlive) {
+                            creature.livingNeighbors++;
+                        }
+                    }
+                    
+                }
+            }
+        }
+    }
+}
+
+- (void) updateCreatures {
+    for(int i = 0; i < [_gridArray count]; ++i) {
+        for(int j = 0; j < [_gridArray count]; ++j) {
+            Creature * creature = _gridArray[i][j];
+            if(creature.livingNeighbors == 3) {
+                creature.isAlive = YES;
+            } else {
+                if(creature.livingNeighbors <= 1 || creature.livingNeighbors >= 4)
+                    creature.isAlive = NO;
+            }
+        }
+    }
+}
+
 -(void) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
     CGPoint touchLocation = [touch locationInNode:self];
     
